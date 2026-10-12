@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="TIBlender: Early-Warning Threat Intelligence from Cross-Platform Social Media Evidence. Accepted at the 42nd IEEE Annual Computer Security Applications Conference (ACSAC 2026). Project overview and artifact release information." name="description"/>
+<meta content="website" property="og:type"/>
+<meta content="TIBlender — Early-Warning Threat Intelligence" property="og:title"/>
+<meta content="TIBlender: Early-Warning Threat Intelligence from Cross-Platform Social Media Evidence. Paper, system architecture, results, and research artifacts." property="og:description"/>
+<meta content="https://tiblender.github.io/assets/architecture.webp" property="og:image"/>
+<title>TIBlender — Early-Warning Threat Intelligence</title>
+<style>
+    :root {
+      color-scheme: light;
+      --ink: #20262b;
+      --heading: #182e42;
+      --muted: #5e6972;
+      --link: #245b84;
+      --line: #d9dee2;
+      --soft: #f6f8fa;
+      --accent: #c16e3b;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #fff;
+      font: 16px/1.7 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--link); text-underline-offset: 2.5px; }
+    a:hover { color: #133953; }
+    a:focus-visible { outline: 2px solid var(--link); outline-offset: 4px; }
+    .wrap { width: min(calc(100% - 52px), 1060px); margin: 0 auto; }
+    .site-header { border-bottom: 1px solid var(--line); }
+    .topnav {
+      min-height: 69px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px 28px;
+    }
+    .wordmark { color: var(--heading); text-decoration: none; font-weight: 700; font-size: 18px; letter-spacing: -0.35px; }
+    .navlinks { display: flex; flex-wrap: wrap; gap: 10px 23px; align-items: center; }
+    .navlinks a { font-size: 13px; text-decoration: none; color: #475864; }
+    .navlinks a:hover { text-decoration: underline; }
+    main { padding-bottom: 58px; }
+    .paper-header { padding: 63px 0 51px; }
+    .venue { margin: 13px 0 20px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    h1, h2 { color: var(--heading); font-family: Georgia, "Times New Roman", serif; }
+    h1 {
+      font-size: clamp(36px, 5vw, 47px);
+      font-weight: 600;
+      line-height: 1.16;
+      letter-spacing: -.022em;
+      margin: 0 0 5px;
+    }
+    .paper-subtitle {
+      max-width: 950px;
+      margin: 0 0 25px;
+      font: 400 clamp(21px, 2.65vw, 27px)/1.33 Georgia, "Times New Roman", serif;
+      letter-spacing: -.012em;
+      color: var(--heading);
+    }
+    .authors { margin: 0 0 5px; font-size: 15px; color: #333c44; }
+    .affiliations { margin: 0; color: var(--muted); font-size: 13px; }
+    .paper-links { margin: 0; font-size: 14px; }
+    .paper-links a { margin-right: 22px; white-space: nowrap; }
+    .sections { border-top: 2px solid #455e73; }
+    section { border-bottom: 1px solid var(--line); padding: 37px 0 43px; scroll-margin-top: 18px; }
+    section h2 { font-size: 27px; font-weight: 500; letter-spacing: -.01em; line-height: 1.25; margin: 0 0 18px; }
+    section h3 { color: var(--heading); font: 700 16px/1.55 "Helvetica Neue", Helvetica, Arial, sans-serif; margin: 26px 0 8px; }
+    p { margin: 0 0 13px; }
+    section > p { max-width: 920px; }
+    .lead { max-width: 920px; font-size: 17px; line-height: 1.8; }
+    .quiet { color: var(--muted); font-size: 14px; }
+    figure { margin: 27px 0 0; }
+    .figure-frame {
+      display: block;
+      border: 1px solid var(--line);
+      padding: 13px;
+      background: #fff;
+      text-decoration: none;
+      cursor: zoom-in;
+    }
+    .figure-frame:hover { border-color: #91a2b0; }
+    .figure-frame img { display: block; width: 100%; height: auto; }
+    figcaption { margin-top: 9px; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+    .small-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    .steps { margin: 24px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .steps li {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      column-gap: 22px;
+      padding: 9px 0 11px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .steps strong { color: #34475a; font-weight: 600; }
+    .steps span { color: #4a535c; }
+    .feedback { font-size: 14px; color: #404951; margin: 18px 0 0; }
+    .evidence-table { border-collapse: collapse; width: 100%; margin: 18px 0 0; font-size: 14px; }
+    .evidence-table caption { text-align: left; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .evidence-table th, .evidence-table td { border-bottom: 1px solid var(--line); padding: 10px 14px 11px 0; text-align: left; vertical-align: top; }
+    .evidence-table tr:first-child th, .evidence-table tr:first-child td { border-top: 1px solid var(--line); }
+    .evidence-table th { font-weight: 500; color: #4f5b64; width: 53%; }
+    .evidence-table td { font-weight: 600; color: #243748; font-variant-numeric: tabular-nums; }
+    .explanation { margin-top: 15px; max-width: 920px; font-size: 13px; color: var(--muted); }
+    .case-grid { display: grid; grid-template-columns: minmax(0,1fr) 290px; gap: 32px; align-items: start; }
+    .case-grid p { max-width: 650px; }
+    .case-figure { margin: 0; }
+    .case-figure .figure-frame { padding: 7px; }
+    .case-figure figcaption { font-size: 12px; }
+    .resources { margin-top: 16px; border-top: 1px solid var(--line); }
+    .resource {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 125px;
+      gap: 15px;
+      padding: 15px 0 17px;
+      border-bottom: 1px solid var(--line);
+    }
+    .resource strong { display: block; font-size: 15px; color: var(--heading); margin-bottom: 2px; }
+    .resource p { margin: 0; font-size: 13.5px; color: #4c5861; }
+    .status { justify-self: end; color: #6a747a; font-size: 13px; white-space: nowrap; padding-top: 1px; }
+    .status.live { color: #305b46; }
+    .resource-note { margin-top: 15px; font-size: 13px; color: var(--muted); }
+    pre {
+      margin: 20px 0 0;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      padding: 15px 18px;
+      overflow-x: auto;
+      white-space: pre;
+      font: 12.5px/1.65 ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      color: #344250;
+    }
+    .contact { font-size: 14px; }
+    .site-footer { font-size: 12px; color: var(--muted); padding: 20px 0 42px; }
+    .site-footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 5px 20px; }
+    @media (max-width: 720px) {
+      .wrap { width: min(calc(100% - 36px), 960px); }
+      .topnav { padding: 14px 0; }
+      .navlinks { gap: 7px 16px; }
+      .paper-header { padding: 37px 0 34px; }
+      .paper-subtitle { margin-bottom: 22px; }
+      .venue { margin-top: 12px; margin-bottom: 18px; }
+      h1 { font-size: clamp(29px, 6vw, 37px); line-height: 1.24; }
+      section { padding: 29px 0 33px; }
+      section h2 { font-size: 24px; }
+      .lead { font-size: 16px; line-height: 1.75; }
+      .steps li { grid-template-columns: 1fr; gap: 3px; }
+      .case-grid { grid-template-columns: 1fr; gap: 20px; }
+      .case-figure { max-width: 350px; }
+      .figure-frame { padding: 6px; }
+    }
+    @media (max-width: 470px) {
+      .navlinks { gap: 4px 13px; }
+      .navlinks a { font-size: 12px; }
+      .paper-links a { display: inline-block; margin: 0 15px 5px 0; }
+      .resource { grid-template-columns: 1fr; gap: 3px; }
+      .status { justify-self: start; }
+      .evidence-table { font-size: 12.5px; }
+      .evidence-table th { width: 54%; }
+      .evidence-table td { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    @media print {
+      body { font-size: 11pt; }
+      .site-header, .site-footer { display: none; }
+      .paper-header { padding: 0 0 20px; }
+      section { break-inside: avoid; }
+      .figure-frame, pre { break-inside: avoid; }
+      a { color: inherit; }
+    }
+  
+    /* Research figure display: large in-page diagrams without external viewer. */
+    .figure-frame { cursor: default; border: 1px solid var(--line); padding: 7px; }
+    .figure-frame:hover { border-color: var(--line); }
+    .wide-figure {
+      width: min(1350px, calc(100vw - 52px));
+      max-width: none;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    .concept-figure { width: min(1200px, calc(100vw - 52px)); }
+    .wide-figure img { display: block; width: 100%; height: auto; }
+    .wide-figure figcaption { max-width: 1060px; margin: 11px auto 0; }
+    .case-grid { grid-template-columns: minmax(0,1fr) 390px; gap: 36px; }
+    @media (max-width: 860px) {
+      .case-grid { grid-template-columns: 1fr; gap: 18px; }
+      .case-figure { max-width: 540px; margin-inline: auto; }
+    }
+    @media (max-width: 720px) {
+      .wide-figure { width: calc(100vw - 24px); }
+      .wide-figure .figure-frame {
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+      .wide-figure .figure-frame img { width: auto; max-width: none; }
+      .concept-figure .figure-frame img { height: auto; width: 760px; }
+      .architecture-figure .figure-frame img { height: auto; width: 1020px; }
+      .wide-figure figcaption { padding-inline: 8px; }
+      .wide-figure figcaption::after {
+        content: " On smaller screens, scroll horizontally inside the figure.";
+        font-style: italic;
+      }
+    }
+    @media print {
+      .wide-figure { width: 100%; margin-left: 0; transform: none; }
+      .wide-figure .figure-frame img { width: 100%; height: auto; }
+    }
+</style>
+</head>
+<body>
+<header class="site-header">
+<div class="wrap topnav">
+<a class="wordmark" href="#top">TIBlender</a>
+<nav aria-label="Site navigation" class="navlinks">
+<a href="#overview">Overview</a>
+<a href="#system">System</a>
+<a href="#evaluation">Evaluation</a>
+<a href="#artifacts">Artifacts</a>
+<a href="#citation">Citation</a>
+</nav>
+</div>
+</header>
+<main class="wrap" id="top">
+<header class="paper-header">
+<h1>TIBlender</h1>
+<p class="paper-subtitle">Early-Warning Threat Intelligence from Cross-Platform Social Media Evidence</p>
+<p class="authors">Hiroki Nakano<sup>1</sup> · Takashi Koide<sup>1</sup> · Daiki Chiba<sup>2</sup></p>
+<p class="affiliations"><sup>1</sup> NTT Security Holdings Corporation &amp; NTT, Inc.   <sup>2</sup> Tokyo Metropolitan University</p>
+<p class="venue">Accepted at the 42nd Annual Computer Security Applications Conference (ACSAC 2026).</p>
+<p class="paper-links"><a href="https://arxiv.org/abs/2606.04580">Preprint (arXiv)</a><a href="#artifacts">Artifact availability</a></p>
+</header>
+<div class="sections">
+<section aria-labelledby="overview-title" id="overview">
+<h2 id="overview-title">Overview</h2>
+<p class="lead">Threat-relevant information is distributed across social media platforms, often in different languages and with incomplete context. TIBlender brings these signals together to generate structured, evidence-backed threat intelligence reports.</p>
+<p>The system monitors X, Reddit, Telegram, and Discord. Specialized LLM agents correlate posts into campaigns, investigate threats from multiple perspectives, and validate supporting evidence before producing actionable indicators of compromise (IoCs) and reports. The system also adapts collection queries and investigation policies across successive monitoring cycles.</p>
+<figure aria-label="TIBlender concept diagram" class="concept-figure wide-figure">
+<div class="figure-frame">
+<img alt="TIBlender concept: fragmented social media signals are extracted, correlated, verified, and synthesized into evidence-backed threat intelligence reports." fetchpriority="high" height="2047" src="assets/concept.webp" width="5100"/>
+</div>
+<figcaption>Figure 1 (from the paper). Illustrative social media signals are integrated into an actionable threat intelligence report. Example posts are shown in English; their tags denote source languages. </figcaption>
+</figure>
+</section>
+<section aria-labelledby="system-title" id="system">
+<h2 id="system-title">System design</h2>
+<p>TIBlender uses a five-step processing pipeline within each collection cycle. Evidence is gathered from four complementary perspectives—Infrastructure, Technical, Social, and Actor—and reviewed by independent judge agents.</p>
+<figure aria-label="TIBlender system architecture diagram" class="architecture-figure wide-figure">
+<div class="figure-frame">
+<img alt="TIBlender architecture with five in-cycle steps and cross-cycle feedback that updates collection queries and an RL investigation policy." height="1938" loading="lazy" src="assets/architecture.webp" width="5500"/>
+</div>
+<figcaption>Figure 2 (from the paper). Five-step in-cycle pipeline and cross-cycle feedback.</figcaption>
+</figure>
+<ol aria-label="TIBlender pipeline steps" class="steps">
+<li><strong>1. Adaptive Collection and Post Analysis</strong><span>Collect posts, extract IoCs, and normalize multilingual content into English threat summaries.</span></li>
+<li><strong>2. Campaign-Level Clustering</strong><span>Group related posts using IoC overlap and semantic similarity, followed by campaign-level refinement.</span></li>
+<li><strong>3. Multi-Perspective Investigation</strong><span>Investigate infrastructure, technical details, social context, and threat actors using external evidence.</span></li>
+<li><strong>4. Adaptive Evaluation Loop</strong><span>Assess evidence sufficiency, consistency, and quality; request additional investigation when needed.</span></li>
+<li><strong>5. Structured Report Generation</strong><span>Generate reports with supporting evidence, IoCs, CVEs, and TTPs in operational formats.</span></li>
+</ol>
+<p class="feedback"><strong>Cross-cycle feedback.</strong> Trend-based query adaptation updates the next collection cycle, while online reinforcement learning updates the investigation strategy using selected trajectories.</p>
+</section>
+<section aria-labelledby="evaluation-title" id="evaluation">
+<h2 id="evaluation-title">Evaluation</h2>
+<p>The paper evaluates TIBlender over a 31-day deployment (March 16–April 16, 2026) spanning all four monitored platforms. Its experiments examine cross-platform contributions, same-input IoC extraction baselines, public threat feeds, human validation, and component ablations.</p>
+<table class="evidence-table">
+<caption>Selected results reported in the paper</caption>
+<tbody>
+<tr><th scope="row">Collected social media posts</th><td>873,973</td></tr>
+<tr><th scope="row">Generated threat intelligence reports</th><td>8,288</td></tr>
+<tr><th scope="row">Reports integrating multiple platforms</th><td>2,003 (24.2%)</td></tr>
+<tr><th scope="row">IoCs absent from each evaluated public feed (feed-scoped)</th><td>83.0%–99.6%</td></tr>
+<tr><th scope="row">Maximum lead time before CISA KEV listing</th><td>13.4 days</td></tr>
+</tbody>
+</table>
+</section>
+<section aria-labelledby="report-title" id="report">
+<h2 id="report-title">Example threat intelligence report</h2>
+<div class="case-grid">
+<div>
+<p>The paper presents a report concerning in-the-wild exploitation of an Adobe Reader zero-day (later assigned CVE-2026-34621). Information from X, Discord, and Reddit contributes different pieces of the investigation, including exploitation alerts, technical context, and the attack timeline.</p>
+<p>Reports include a threat summary, supporting evidence, confidence information, relevant IoCs and TTPs, and recommended actions. A browser-based report viewer is illustrated in the paper.</p>
+<p class="quiet">The screenshot is illustrative; access to report files and other research artifacts will be updated in the release section below.</p>
+</div>
+<figure class="case-figure">
+<div class="figure-frame">
+<img alt="Screenshot of the TIBlender browser-based report viewer displaying an Adobe Reader zero-day threat intelligence report." height="1582" loading="lazy" src="assets/report-viewer.webp" width="1315"/>
+</div>
+<figcaption>Figure 4 (from the paper). Example report in the TIBlender viewer. </figcaption>
+</figure>
+</div>
+</section>
+<section aria-labelledby="artifacts-title" id="artifacts">
+<h2 id="artifacts-title">Research artifacts</h2>
+<p>The implementation and research dataset are being prepared for release on GitHub. Links to the materials and documentation will be added here once available.</p>
+<div aria-label="Research material availability" class="resources">
+<div class="resource">
+<div><strong>Paper / preprint</strong><p>The publicly available arXiv preprint of the TIBlender paper.</p></div>
+<div class="status live"><a href="https://arxiv.org/abs/2606.04580">Available</a></div>
+</div>
+<div class="resource">
+<div><strong>Implementation</strong><p>System source code and setup documentation for the collection, clustering, investigation, evaluation, and report-generation pipeline.</p></div>
+<div class="status">Planned release</div>
+</div>
+<div class="resource">
+<div><strong>Research dataset</strong><p>Research data and associated descriptions for evaluating TIBlender, subject to privacy review and social media platform data-sharing requirements.</p></div>
+<div class="status">Planned release</div>
+</div>
+</div>
+</section>
+<section aria-labelledby="citation-title" id="citation">
+<h2 id="citation-title">Paper and citation</h2>
+<p>Hiroki Nakano, Takashi Koide, and Daiki Chiba. “TIBlender: Early-Warning Threat Intelligence from Cross-Platform Social Media Evidence.” In <em>Proceedings of the 42nd Annual Computer Security Applications Conference (ACSAC 2026)</em>, Los Angeles, California, USA, 2026.</p>
+
+<pre aria-label="BibTeX citation for the ACSAC 2026 conference paper">@inproceedings{nakano2026tiblender,
+  author    = {Hiroki Nakano and Takashi Koide and Daiki Chiba},
+  title     = {{TIBlender}: Early-Warning Threat Intelligence from
+               Cross-Platform Social Media Evidence},
+  booktitle = {Proceedings of the 42nd Annual Computer Security
+               Applications Conference (ACSAC 2026)},
+  year      = {2026}
+}</pre>
+<p class="contact" style="margin-top:20px">For questions about this project, contact <a href="mailto:hi.nakano.sec@gmail.com">Hiroki Nakano</a>.</p>
+</section>
+</div>
+</main>
+<footer class="site-footer">
+<div class="wrap"><span>TIBlender</span><span><a href="https://arxiv.org/abs/2606.04580">arXiv:2606.04580</a></span></div>
+</footer>
+</body>
+</html>
